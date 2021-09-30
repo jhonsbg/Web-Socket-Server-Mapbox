@@ -26,7 +26,7 @@ export const mapaSockets = (cliente: Socket, io: socketIO.Server) => {
 
     cliente.on( 'marcador-mover', ( marcador: Marcador ) => {
         mapa.moverMarcador( marcador );
-        cliente.broadcast.emit( 'marcador-mover', marcador );
+        cliente.emit( 'marcador-mover', marcador );
     });
 }
 
