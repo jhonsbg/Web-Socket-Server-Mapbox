@@ -51,8 +51,9 @@ var Server = /** @class */ (function () {
         var _this = this;
         console.log('Escuchando conexiones - sockets');
         this.io.on('connection', function (cliente) {
+            console.log("Holaa");
             // Conectar cliente
-            sockets.conectarCliente(cliente);
+            sockets.conectarCliente(cliente, _this.io);
             // Configurar usuario
             sockets.mapaSockets(cliente, _this.io);
             // Configurar Usuario

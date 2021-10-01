@@ -3,6 +3,7 @@ import { Marcador } from './marcador';
 
 export class Mapa{
     private marcadores: {[key: string]: Marcador} = {
+        
     }
 
     constructor(){}

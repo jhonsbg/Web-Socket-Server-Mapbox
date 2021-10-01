@@ -18,19 +18,26 @@ var mapaSockets = function (cliente, io) {
     });
     cliente.on('marcador-mover', function (marcador) {
         exports.mapa.moverMarcador(marcador);
-        cliente.emit('marcador-mover', marcador);
+        // console.log(marcador);
+        cliente.broadcast.emit('marcador-mover', marcador);
     });
 };
 exports.mapaSockets = mapaSockets;
 // Agregar cliente a lista de usuarios
-var conectarCliente = function (cliente) {
+var conectarCliente = function (cliente, io) {
+    console.log("Creando usuario");
     var usuario = new usuario_1.Usuario(cliente.id);
     exports.usuariosConectados.agregar(usuario);
+    cliente.emit('id-usuario', cliente.id);
+    // console.log(cliente.id);
 };
 exports.conectarCliente = conectarCliente;
 // Escuchar si cliente se desconecta
 var desconectar = function (cliente, io) {
     cliente.on('disconnect', function () {
+        console.log('Borrar Marcador');
+        exports.mapa.borrarMarcador(cliente.id);
+        cliente.broadcast.emit('marcador-borrar', cliente.id);
         console.log('Ciente desconectado');
         exports.usuariosConectados.borrarUsuario(cliente.id);
         io.emit('usuarios-activos', exports.usuariosConectados.getLista());

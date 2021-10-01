@@ -26,7 +26,8 @@ export const mapaSockets = (cliente: Socket, io: socketIO.Server) => {
 
     cliente.on( 'marcador-mover', ( marcador: Marcador ) => {
         mapa.moverMarcador( marcador );
-        cliente.emit( 'marcador-mover', marcador );
+        // console.log(marcador);
+        cliente.broadcast.emit( 'marcador-mover', marcador );
     });
 }
 
@@ -34,14 +35,20 @@ export const mapaSockets = (cliente: Socket, io: socketIO.Server) => {
 
 
 // Agregar cliente a lista de usuarios
-export const conectarCliente = (cliente: Socket) => {
+export const conectarCliente = (cliente: Socket, io:socketIO.Server) => {
+    console.log("Creando usuario");
     const usuario = new Usuario(cliente.id);
     usuariosConectados.agregar(usuario);
+    cliente.emit('id-usuario', cliente.id);
+    // console.log(cliente.id);
 }
 
 // Escuchar si cliente se desconecta
 export const desconectar = (cliente: Socket, io:socketIO.Server) => {
     cliente.on('disconnect', () => {
+        console.log('Borrar Marcador');
+        mapa.borrarMarcador(cliente.id);
+        cliente.broadcast.emit('marcador-borrar', cliente.id);
         console.log('Ciente desconectado');
         usuariosConectados.borrarUsuario(cliente.id);
         io.emit('usuarios-activos', usuariosConectados.getLista());
